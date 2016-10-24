@@ -2,7 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.FileReader;
-import java.util.List;
+import java.util.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -20,7 +20,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import model.HealthProfile;
@@ -31,25 +33,29 @@ import model.generated.People;
 public class HealthProfileReader {
 	public PeopleStore people = new PeopleStore();
 
+    private String PathToXML;
+    private DocumentBuilder builder;
+    private Document document;
+    private XPath xpath;
+
     public HealthProfileReader(String PathToXML) throws Exception {
+        this.PathToXML = PathToXML;
 
         // Setup for using XPATH
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true);
-        DocumentBuilder builder = domFactory.newDocumentBuilder();
+        this.builder = domFactory.newDocumentBuilder();
+        this.document = this.builder.parse(PathToXML);
+        XPathFactory factory = XPathFactory.newInstance();
+        this.xpath = factory.newXPath();
 
-        // We read the XML data
+        // Mapping the XML data into Objects with JAXB
         JAXBContext jc = JAXBContext.newInstance(PeopleStore.class);
         Unmarshaller um = jc.createUnmarshaller();
         this.people = (PeopleStore) um.unmarshal(new FileReader(PathToXML));
-        /*List<Person> list = people.getData();
-        for (Person person : list) {
-          System.out.println("Person: " + person.getFirstname() + " born " + person.getBirthdate());
-        }
-        System.out.println("Done");*/
     }
 
-    public PeopleStore getPeople() throws Exception {
+    public PeopleStore getPeopleByUnmarshalling() throws Exception {
         return this.people;
     }
 
@@ -65,17 +71,74 @@ public class HealthProfileReader {
         throw new Exception("No person found with ID: " + ID);
     }
 
-    public void printAllNames() {
-        System.out.println("Loading books.xml...");
-        Document doc = builder.parse("books.xml");
+    /* Retrive a persons Weight by his ID using XPATH
+     */
+    public String getWeightByPersonID(String ID) throws XPathExpressionException {
+        XPathExpression expr = this.xpath.compile("/people/person[@id=" + ID + "]/healthprofile/weight");
+        Object result = expr.evaluate(this.document, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+        return nodes.item(0).getChildNodes().item(0).getNodeValue();
+    }
 
+    /* Retrive a persons Height by his ID using XPATH
+     */
+    public String getHeightByPersonID(String ID) throws XPathExpressionException {
+        XPathExpression expr = this.xpath.compile("/people/person[@id=" + ID + "]/healthprofile/height");
+        Object result = expr.evaluate(this.document, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+        return nodes.item(0).getChildNodes().item(0).getNodeValue();
+    }
+
+    public Person personFromXPATH(Element node) {
+        String id = node.getAttributes().item(0).getTextContent();
+        String firstname = node.getChildNodes().item(1).getTextContent();
+        String lastname = node.getChildNodes().item(3).getTextContent();
+        String birthdate = node.getChildNodes().item(5).getTextContent();
+        String weight = node.getElementsByTagName("weight").item(0).getChildNodes().item(0).getNodeValue();
+        String height = node.getElementsByTagName("height").item(0).getChildNodes().item(0).getNodeValue();
+        HealthProfile hp = new HealthProfile(Double.parseDouble(weight),Double.parseDouble(height));
+
+        return new Person(Long.parseLong(id), firstname, lastname, birthdate, hp);
+    }
+
+    /* Retrive all information from all persons using XPATH
+     */
+    public List<Person> getPeople() throws XPathExpressionException {
+        List<Person> people = new ArrayList<Person>();
+        XPathExpression expr = this.xpath.compile("/people/person");
+        Object result = expr.evaluate(this.document, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            people.add(personFromXPATH((Element) nodes.item(i)));
+        }
+        return people;
+    }
+
+    /* Retrive people with certain weight parameter using XPATH
+     * Usaqe: ">90", "<80", "=70"
+     * Pass it a string with an operator from this list: > < =
+     * and an integer
+     * and the function will return all personal data for those that the filter is true
+     */
+    public List<Person> getPeopleWithWeight(String operator, String weight) throws XPathExpressionException {
+        List<Person> people = new ArrayList<Person>();
+        XPathExpression expr = this.xpath.compile("/people/person[healthprofile/weight" + operator + weight + "]");
+        Object result = expr.evaluate(this.document, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            people.add(personFromXPATH((Element) nodes.item(i)));
+        }
+        return people;
+    }
+
+    public void printAllNames() throws XPathExpressionException {
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
         System.out.println("Reading list of titles...");
-        System.out.println("(using xpath = /bookstore/book/title/text()");
-        XPathExpression expr = xpath.compile("/bookstore/book/title/text()");
+        System.out.println("(using xpath = //firstname)");
+        XPathExpression expr = xpath.compile("//firstname/text()");
 
-        Object result = expr.evaluate(doc, XPathConstants.NODESET);
+        Object result = expr.evaluate(this.document, XPathConstants.NODESET);
         NodeList nodes = (NodeList) result;
         for (int i = 0; i < nodes.getLength(); i++) {
             System.out.println(nodes.item(i).getNodeValue());

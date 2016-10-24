@@ -16,8 +16,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>95</weight>
+            <height>1.75</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>
@@ -27,8 +27,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>100</weight>
+            <height>1.80</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>
@@ -38,8 +38,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>120</weight>
+            <height>1.83</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>
@@ -49,8 +49,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>70</weight>
+            <height>1.60</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>
@@ -60,8 +60,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>85</weight>
+            <height>1.75</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>
@@ -71,8 +71,8 @@
         <birthdate>1984-09-20T18:00:00.000+02:00</birthdate>
         <healthprofile>
             <lastupdate>2014-09-20T18:00:00.000+02:00</lastupdate>
-            <weight>90</weight>
-            <height>1.70</height>
+            <weight>60</weight>
+            <height>1.68</height>
             <bmi>31.14</bmi>
         </healthprofile>
     </person>

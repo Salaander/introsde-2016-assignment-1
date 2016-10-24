@@ -21,31 +21,59 @@ public class Assignment {
 
     public static void main(String[] args) throws Exception {
         HealthProfileReader healthProfileReader = new HealthProfileReader("db/people.xml");
-        PeopleStore people = healthProfileReader.getPeople();
+        HealthProfileWriter healthProfileWriter = new HealthProfileWriter();
+
+        // Task -1: Testing the new getWeight and getHeight functions
+
+        //System.out.println();
+        //healthProfileReader.getHeightByPersonID("0019");
+        //healthProfileReader.getWeightByPersonID("0019");
+        //System.out.println();
 
         // Task 1: runs instruction 2 based on Lab 3
-        List<Person> list = people.getData();
+        System.out.println("Task 1: runs instruction 2 based on Lab 3");
+        List<Person> list = healthProfileReader.getPeople();
         for (Person person : list) {
             Assignment.printPerson(person);
         }
 
         // Task 2: runs instruction 3 based on Lab 3 with id = 5 (make sure you have a person with such an id)
         System.out.println();
-        Long PersonID = 15L;
-        HealthProfile healthProfile = healthProfileReader.getHealtProfileByPersonID(PersonID);
+        String PersonID = "0005";
+        System.out.println("Task 2: runs instruction 3 based on Lab 3 with id = 5");
+        HealthProfile healthProfile = healthProfileReader.getHealtProfileByPersonID(Long.parseLong(PersonID));
         System.out.println("Found person with ID " + PersonID + ", showing health profile:");
         System.out.println(healthProfile.toString());
         System.out.println();
 
         // Task 3: runs instruction 4 based on Lab 3 with weight > 90
         System.out.println();
+        System.out.println("Task 3: runs instruction 4 based on Lab 3 with weight >90");
+        List<Person> list2 = healthProfileReader.getPeopleWithWeight(">", "90");
+        for (Person person : list2) {
+            Assignment.printPerson(person);
+        }
+
+        PeopleStore ps = new PeopleStore();
+        ps.setData(list2);
 
         // Task 4: runs instruction 2 based on Lab 4 (marshaling to XML - create 3 persons using java and marshal them to XML) - please print the content and save to .xml file
+        System.out.println();
+        System.out.println("Task 4: runs instruction 2 based on Lab 4 ");
+        healthProfileWriter.marshallToXML(ps, "db/new_people.xml");
 
         // Task 5: runs instruction 2 based on Lab 4 (un-marshaling from XML)
+        System.out.println();
+        System.out.println("Task 5: runs instruction 2 based on Lab 4");
+        PeopleStore p = healthProfileReader.getPeopleByUnmarshalling();
+        for (Person person : p.getData()) {
+            Assignment.printPerson(person);
+        }
 
         // Task 6: runs instruction 3 based on Lab 4 (marshaling to JSON - create 3 persons using java and marshal them to JSON) - please print the content and save to .json file
-
+        System.out.println();
+        System.out.println("Task 6: runs instruction 3 based on Lab 4");
+        healthProfileWriter.marshallToJSON(ps, "db/new_people.json");
     }
 
     //public fu

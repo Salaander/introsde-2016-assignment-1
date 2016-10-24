@@ -2,38 +2,54 @@ package controller;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
 import model.HealthProfile;
 import model.Person;
 import dao.PeopleStore;
+import model.generated.People;
 
-public class HealthProfileWriter {  	
-	public static PeopleStore people = new PeopleStore();
+public class HealthProfileWriter {
 
-	public static void initializeDB() {
-		Person pallino = new Person();
-		Person pallo = new Person(new Long(1), "Pallo", "Pinco", "1984-06-21");
-		HealthProfile hp = new HealthProfile(68.0, 1.72);
-		Person john = new Person(new Long(2), "John", "Doe", "1985-03-20", hp);
+    JAXBContext jaxb;
+    Marshaller marshaller;
 
-		people.getData().add(pallino);
-		people.getData().add(pallo);
-		people.getData().add(john);
-	}	
+    public HealthProfileWriter() throws JAXBException {
+        this.jaxb = JAXBContext.newInstance(PeopleStore.class);
+        this.marshaller = this.jaxb.createMarshaller();
+        this.marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    }
 
-	public static void main(String[] args) throws Exception {
-		
-		initializeDB();
-		
-		JAXBContext jc = JAXBContext.newInstance(PeopleStore.class);
-        Marshaller m = jc.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        
-        m.marshal(people,new File("people.xml")); // marshalling into a file
-        m.marshal(people, System.out);			  // marshalling into the system default output
+    public void marshallToXML(PeopleStore people, String FileName) throws JAXBException {
+        this.marshaller.marshal(people,new File(FileName)); // marshalling into a file
+        this.marshaller.marshal(people, System.out);
+    }
+
+    public void marshallToJSON(PeopleStore people, String FileName) throws JAXBException, IOException {
+        // Jackson Object Mapper
+        ObjectMapper mapper = new ObjectMapper();
+
+        // Adding the Jackson Module to process JAXB annotations
+        JaxbAnnotationModule module = new JaxbAnnotationModule();
+
+        // configure as necessary
+        mapper.registerModule(module);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+
+        String result = mapper.writeValueAsString(people);
+        System.out.println(result);
+        mapper.writeValue(new File(FileName), people);
     }
 }
