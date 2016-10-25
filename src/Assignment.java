@@ -24,6 +24,7 @@ public class Assignment {
         HealthProfileWriter healthProfileWriter = new HealthProfileWriter();
 
         // Task -1: Testing the new getWeight and getHeight functions
+        // Use xpath to implement methods like getWeight and getHeight (getWeight(personID) returns weight of a given person, the same for getHeight)
 
         //System.out.println();
         //healthProfileReader.getHeightByPersonID("0019");
@@ -31,6 +32,7 @@ public class Assignment {
         //System.out.println();
 
         // Task 1: runs instruction 2 based on Lab 3
+        // Make a function that prints all people in the list with detail
         System.out.println("Task 1: runs instruction 2 based on Lab 3");
         List<Person> list = healthProfileReader.getPeople();
         for (Person person : list) {
@@ -38,15 +40,17 @@ public class Assignment {
         }
 
         // Task 2: runs instruction 3 based on Lab 3 with id = 5 (make sure you have a person with such an id)
+        // A function that accepts id as parameter and prints the HealthProfile of the person with that id
         System.out.println();
         String PersonID = "0005";
         System.out.println("Task 2: runs instruction 3 based on Lab 3 with id = 5");
-        HealthProfile healthProfile = healthProfileReader.getHealtProfileByPersonID(Long.parseLong(PersonID));
+        HealthProfile healthProfile = healthProfileReader.getHealthProfileByPersonID(PersonID);
         System.out.println("Found person with ID " + PersonID + ", showing health profile:");
         System.out.println(healthProfile.toString());
         System.out.println();
 
         // Task 3: runs instruction 4 based on Lab 3 with weight > 90
+        // A function which accepts a weight and an operator (=, > , <) as parameters and prints people that fulfill that condition (i.e., >80Kg, =75Kg, etc.).
         System.out.println();
         System.out.println("Task 3: runs instruction 4 based on Lab 3 with weight >90");
         List<Person> list2 = healthProfileReader.getPeopleWithWeight(">", "90");

@@ -62,13 +62,18 @@ public class HealthProfileReader {
     /* Method to find a Person with a given ID and return it's health profile (needed for task 2)
        We assume ID is a uniqe identifier so we simply return the first occurence
      */
-    public HealthProfile getHealtProfileByPersonID(Long ID) throws Exception {
+    public HealthProfile getHealthProfileByPersonID(Long ID) throws Exception {
         for (Person person : people.getData()) {
             if (person.getPersonId() == (Long)ID) {
                 return person.getHProfile();
             }
         }
         throw new Exception("No person found with ID: " + ID);
+    }
+
+    public HealthProfile getHealthProfileByPersonID(String ID) throws Exception {
+        return new HealthProfile(Double.parseDouble(getWeightByPersonID(ID)),
+                Double.parseDouble(getHeightByPersonID(ID)));
     }
 
     /* Retrive a persons Weight by his ID using XPATH
